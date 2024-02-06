@@ -176,6 +176,8 @@ var langList = [
 var output = document.getElementById("output");
 var translation = document.getElementById("translation");
 
+let oldText = '';
+
 var start = document.getElementById("start");
 var stop = document.getElementById("stop");
 var cancel = document.getElementById("cancel");
@@ -197,7 +199,7 @@ recognizer.lang = "fr-FR";
 // now create a list of language to select on page
 for (var i = 0; i < langList.length; i++) {
     // add it in the select tag
-    if(langList[i][0] == "English"){
+    if (langList[i][0] == "English") {
         var countryList2 = countryList2 + '<option selected value="' + i + '">' + langList[i][0] + "</option>";
     } else if (langList[i][0] == "Français") {
         var countryList = countryList + '<option selected value="' + i + '">' + langList[i][0] + "</option>";
@@ -270,11 +272,23 @@ recognizer.onerror = function (event) {
     console.log("on error");
     console.log(event.error);
 };
+
+let timeoutID;
 recognizer.onresult = async function (event) {
+
+    clearTimeout(timeoutID);
+
+    // Set a new timeout for 1 second
+    timeoutID = setTimeout(function () {
+        oldText = output.value;
+        recognizer.stop();
+        setTimeout(function () {recognizer.start()}, 500);
+    }, 1000);
+
     //console.log("on result" + JSON.stringify(event.results[0][0].transcript));
     var outText = event.results[0][0].transcript;
     var confidence = event.results[0][0].confidence * 100;
-    output.value = outText;
+    output.value = oldText+" "+outText;
     confd.innerHTML = "Confidence: " + Math.round(confidence) + "%";
     await traduction(output.value, langList[country.value][0], langList[countryTrad.value][0]);
 };
