@@ -197,14 +197,17 @@ recognizer.lang = "fr-FR";
 // now create a list of language to select on page
 for (var i = 0; i < langList.length; i++) {
     // add it in the select tag
-    if (langList[i][0] == "Français") {
+    if(langList[i][0] == "English"){
+        var countryList2 = countryList2 + '<option selected value="' + i + '">' + langList[i][0] + "</option>";
+    } else if (langList[i][0] == "Français") {
         var countryList = countryList + '<option selected value="' + i + '">' + langList[i][0] + "</option>";
     } else {
         var countryList = countryList + '<option value="' + i + '">' + langList[i][0] + "</option>";
+        var countryList2 = countryList2 + '<option value="' + i + '">' + langList[i][0] + "</option>";
     }
 }
 country.innerHTML = countryList;
-countryTrad.innerHTML = countryList;
+countryTrad.innerHTML = countryList2;
 // some languages are used in more that one country Now specify languages for country
 country.onchange = function () {
     var countryVal = country.value;
@@ -289,8 +292,8 @@ async function traduction(text, lang, langTo) {
             sigleTo = langTrad[i][1];
         }
     }
-    console.log(lang + " -> " + langTo);
-    console.log(sigle + " -> " + sigleTo);
+    //console.log(lang + " -> " + langTo);
+    //console.log(sigle + " -> " + sigleTo);
     fetch("http://localhost:5000/translate", {
         method: "POST",
         body: JSON.stringify({
